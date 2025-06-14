@@ -6,6 +6,11 @@ resource "aws_ecr_repository" "cyo_ecr_repo" {
     scan_on_push = true
   }
 }
+data "aws_elastic_beanstalk_solution_stack" "latest_nodejs" {
+  most_recent = true
+  name_regex  = "64bit Amazon Linux.*running Node.js"
+}
+
 
 resource "aws_elastic_beanstalk_application" "cyo_eba" {
   name        = var.PROJECT_NAME
@@ -15,7 +20,7 @@ resource "aws_elastic_beanstalk_application" "cyo_eba" {
 resource "aws_elastic_beanstalk_environment" "cyo_ebef" {
   name                = var.MODULE_NAME
   application         = aws_elastic_beanstalk_application.cyo_eba.name
-  solution_stack_name = var.SOLUTION_STACK_NAME
+  solution_stack_name = data.aws_elastic_beanstalk_solution_stack.latest_nodejs.name
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
