@@ -7,6 +7,7 @@ on:
 jobs:
   provisioning:
     runs-on: ubuntu-latest
+    environment: production
     env:
       TF_VAR_AWS_REGION: ${{ vars.AWS_REGION }}
       TF_VAR_PROJECT_NAME: ${{ vars.PROJECT_NAME }}
