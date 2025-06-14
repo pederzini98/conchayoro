@@ -22,11 +22,11 @@ export class ProductsService {
     return this.productModel.findAll();
   }
 
- async findOne(id: string): Promise<Product | null> {
-  return this.productModel.findOne({
-    where: { id },
-  });
-}
+  async findOne(id: string): Promise<Product | null> {
+    return this.productModel.findOne({
+      where: { id },
+    });
+  }
   async remove(id: string): Promise<void> {
     const product = await this.findOne(id);
     await product?.destroy();
@@ -42,5 +42,10 @@ export class ProductsService {
     };
     await product?.update(productUpdated);
     return product
+  }
+  async findByCriteria(criteria: any): Promise<Product[]> {
+    return this.productModel.findAll({
+      where: criteria,
+    });
   }
 }
