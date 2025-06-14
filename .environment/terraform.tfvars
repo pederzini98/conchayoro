@@ -1,13 +1,13 @@
 ## Single instance settings
 ##---------------------------
-EnvironmentType = "SingleInstance"
+EnvironmentType  = "SingleInstance"
 LoadBalancerType = "application"
-MinSize = 1
-MaxSize = 1
+MinSize          = 1
+MaxSize          = 1
 DeploymentPolicy = "AllAtOnce"
-BatchSizeType = "Fixed"
-BatchSize = 50
-Timeout = 3600
+BatchSizeType    = "Fixed"
+BatchSize        = 50
+Timeout          = 3600
 ## LoadedBalanced service settings
 ##---------------------------
 #EnvironmentType = "LoadBalanced"
