@@ -1,8 +1,6 @@
 name: provisioning ecr-eb
 
-on:
-  workflow_dispatch:
-
+on: workflow_dispatch
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
