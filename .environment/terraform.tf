@@ -6,5 +6,5 @@ terraform {
     }
   }
 
-  backend "s3" {}  # Variáveis serão passadas pela GitHub Action
+  required_version = ">= 1.12.1"
 }
