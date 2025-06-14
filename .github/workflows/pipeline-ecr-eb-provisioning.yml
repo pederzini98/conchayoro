@@ -1,41 +1,48 @@
 name: provisioning ecr-eb
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+
 
 env:
-  TF_VAR_AWS_REGION: ${{ vars.AWS_REGION }}
-  TF_VAR_PROJECT_NAME: ${{ vars.PROJECT_NAME }}
-  TF_VAR_MODULE_NAME: ${{ vars.MODULE_NAME }}
-  TF_VAR_S3_BUCKET: ${{ vars.S3_BUCKET }}
-  TF_VAR_SOLUTION_STACK_NAME: ${{ vars.SOLUTION_STACK_NAME }}
-  TF_VAR_EnvironmentType: ${{ vars.ENVIRONMENT_TYPE }}
-  TF_VAR_LoadBalancerType: ${{ vars.LOAD_BALANCER_TYPE }}
-  TF_VAR_MinSize: ${{ vars.MIN_SIZE }}
-  TF_VAR_MaxSize: ${{ vars.MAX_SIZE }}
-  TF_VAR_DeploymentPolicy: ${{ vars.DEPLOYMENT_POLICY }}
-  TF_VAR_BatchSizeType: ${{ vars.BATCH_SIZE_TYPE }}
-  TF_VAR_BatchSize: ${{ vars.BATCH_SIZE }}
-  TF_VAR_Timeout: ${{ vars.TIMEOUT }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  PROJECT_NAME: ${{ vars.PROJECT_NAME }}
+  MODULE_NAME: ${{ vars.MODULE_NAME }}
+  S3_BUCKET: ${{ vars.S3_BUCKET }}
+  SOLUTION_STACK_NAME: ${{ vars.SOLUTION_STACK_NAME }}
+  ENVIRONMENT_TYPE: ${{ vars.ENVIRONMENT_TYPE }}
+  LOAD_BALANCER_TYPE: ${{ vars.LOAD_BALANCER_TYPE }}
+  MIN_SIZE: ${{ vars.MIN_SIZE }}
+  MAX_SIZE: ${{ vars.MAX_SIZE }}
+  DEPLOYMENT_POLICY: ${{ vars.DEPLOYMENT_POLICY }}
+  BATCH_SIZE_TYPE: ${{ vars.BATCH_SIZE_TYPE }}
+  BATCH_SIZE: ${{ vars.BATCH_SIZE }}
+  TIMEOUT: ${{ vars.TIMEOUT }}
 
 jobs:
   provisioning:
     runs-on: ubuntu-latest
     env:
-      TF_VAR_AWS_REGION: ${{ env.AWS_REGION }}
-      TF_VAR_PROJECT_NAME: ${{ env.PROJECT_NAME }}
-      TF_VAR_MODULE_NAME: ${{ env.MODULE_NAME }}
-      TF_VAR_S3_BUCKET: ${{ env.S3_BUCKET }}
-      TF_VAR_SOLUTION_STACK_NAME: ${{ env.SOLUTION_STACK_NAME }}
-      TF_VAR_EnvironmentType: ${{ env.ENVIRONMENT_TYPE }}
-      TF_VAR_LoadBalancerType: ${{ env.LOAD_BALANCER_TYPE }}
-      TF_VAR_MinSize: ${{ env.MIN_SIZE }}
-      TF_VAR_MaxSize: ${{ env.MAX_SIZE }}
-      TF_VAR_DeploymentPolicy: ${{ env.DEPLOYMENT_POLICY }}
-      TF_VAR_BatchSizeType: ${{ env.BATCH_SIZE_TYPE }}
-      TF_VAR_BatchSize: ${{ env.BATCH_SIZE }}
-      TF_VAR_Timeout: ${{ env.TIMEOUT }}
+      TF_VAR_AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_VAR_PROJECT_NAME: ${{ vars.PROJECT_NAME }}
+      TF_VAR_MODULE_NAME: ${{ vars.MODULE_NAME }}
+      TF_VAR_S3_BUCKET: ${{ vars.S3_BUCKET }}
+      TF_VAR_SOLUTION_STACK_NAME: ${{ vars.SOLUTION_STACK_NAME }}
+      TF_VAR_EnvironmentType: ${{ vars.ENVIRONMENT_TYPE }}
+      TF_VAR_LoadBalancerType: ${{ vars.LOAD_BALANCER_TYPE }}
+      TF_VAR_MinSize: ${{ vars.MIN_SIZE }}
+      TF_VAR_MaxSize: ${{ vars.MAX_SIZE }}
+      TF_VAR_DeploymentPolicy: ${{ vars.DEPLOYMENT_POLICY }}
+      TF_VAR_BatchSizeType: ${{ vars.BATCH_SIZE_TYPE }}
+      TF_VAR_BatchSize: ${{ vars.BATCH_SIZE }}
+      TF_VAR_Timeout: ${{ vars.TIMEOUT }}
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
@@ -43,9 +50,9 @@ jobs:
     - name: Terraform Init
       run: |
         terraform -chdir=.environment init \
-          -backend-config="bucket=${{ env.S3_BUCKET }}" \
+          -backend-config="bucket=${{ vars.S3_BUCKET }}" \
           -backend-config="key=state/terraform.tfstate" \
-          -backend-config="region=${{ env.AWS_REGION }}" \
+          -backend-config="region=${{ vars.AWS_REGION }}" \
           -backend-config="encrypt=true"
 
     - name: Terraform Plan
