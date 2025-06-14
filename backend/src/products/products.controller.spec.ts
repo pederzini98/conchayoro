@@ -52,13 +52,15 @@ describe('ProductsController', () => {
     );
   });
   it('should delete a product', async () => {
-    const mockedResponseData = product;
     const id = '1';
+
     jest
       .spyOn(productsService, 'remove')
-      .mockImplementation(() => Promise.resolve(mockedResponseData.id));
-    expect(await productsController.remove(id));
+      .mockImplementation(() => Promise.resolve()); // 👈 retorna undefined, como esperado
+
+    await expect(productsController.remove(id)).resolves.toBeUndefined(); // opcional: testar que não retorna nada
   });
+
   it('should return an array of products', async () => {
     const mockedResponseData = [];
     jest
