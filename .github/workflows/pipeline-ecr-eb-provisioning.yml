@@ -4,29 +4,16 @@ on:
   workflow_dispatch:
 
 
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-  AWS_REGION: ${{ vars.AWS_REGION }}
-  PROJECT_NAME: ${{ vars.PROJECT_NAME }}
-  MODULE_NAME: ${{ vars.MODULE_NAME }}
-  S3_BUCKET: ${{ vars.S3_BUCKET }}
-  SOLUTION_STACK_NAME: ${{ vars.SOLUTION_STACK_NAME }}
-  ENVIRONMENT_TYPE: ${{ vars.ENVIRONMENT_TYPE }}
-  LOAD_BALANCER_TYPE: ${{ vars.LOAD_BALANCER_TYPE }}
-  MIN_SIZE: ${{ vars.MIN_SIZE }}
-  MAX_SIZE: ${{ vars.MAX_SIZE }}
-  DEPLOYMENT_POLICY: ${{ vars.DEPLOYMENT_POLICY }}
-  BATCH_SIZE_TYPE: ${{ vars.BATCH_SIZE_TYPE }}
-  BATCH_SIZE: ${{ vars.BATCH_SIZE }}
-  TIMEOUT: ${{ vars.TIMEOUT }}
-
 jobs:
   provisioning:
     runs-on: ubuntu-latest
     env:
+      # Credenciais AWS
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+
+      # Variáveis TF_VAR para Terraform
       TF_VAR_AWS_REGION: ${{ vars.AWS_REGION }}
       TF_VAR_PROJECT_NAME: ${{ vars.PROJECT_NAME }}
       TF_VAR_MODULE_NAME: ${{ vars.MODULE_NAME }}
@@ -40,6 +27,7 @@ jobs:
       TF_VAR_BatchSizeType: ${{ vars.BATCH_SIZE_TYPE }}
       TF_VAR_BatchSize: ${{ vars.BATCH_SIZE }}
       TF_VAR_Timeout: ${{ vars.TIMEOUT }}
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -54,6 +42,12 @@ jobs:
           -backend-config="key=state/terraform.tfstate" \
           -backend-config="region=${{ vars.AWS_REGION }}" \
           -backend-config="encrypt=true"
+
+    - name: Terraform Format
+      run: terraform -chdir=.environment fmt -check
+
+    - name: Terraform Validate
+      run: terraform -chdir=.environment validate
 
     - name: Terraform Plan
       run: terraform -chdir=.environment plan -input=false -out=tfplan

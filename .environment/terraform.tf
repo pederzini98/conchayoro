@@ -8,3 +8,7 @@ terraform {
 
   required_version = ">= 1.12.1"
 }
+
+provider "aws" {
+  region = var.AWS_REGION
+}
